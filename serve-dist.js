@@ -20,7 +20,7 @@ const port = Number(process.env.PORT) || 4173;
 
 createServer((req, res) => {
   const urlPath = (req.url || '/').split('?')[0];
-  const requestPath = urlPath === '/' ? '/dev-preview.html' : urlPath;
+  const requestPath = urlPath === '/' ? '/index.html' : urlPath;
   const fsPath = resolve(join(distRoot, normalize(requestPath)));
 
   if (!fsPath.startsWith(distRoot)) {
