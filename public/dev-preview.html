@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>阿一Banana批量去水印工具</title>
+  <meta name="description" content="Internal batch preview harness for the open-source Gemini watermark remover.">
+  <meta name="robots" content="noindex, nofollow">
+  <link rel="canonical" href="https://geminiwatermarkremover.io/">
+  <link rel="icon" href="https://n8jmply6oexq.meoo.fun/sb-api/storage/v1/object/public/ayi_oss/public/1778544276186-touxiang_ayi_cat_touming.png">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            primary: '#10B981',
+            'primary-hover': '#059669'
+          },
+          boxShadow: {
+            soft: '0 4px 20px -2px rgba(16, 185, 129, 0.1)',
+            card: '0 0 20px rgba(0,0,0,0.05)'
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    body { font-family: "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif; }
+    ::-webkit-scrollbar { width: 10px; }
+    ::-webkit-scrollbar-track { background: #f1f1f1; }
+    ::-webkit-scrollbar-thumb { background: #10B981; border-radius: 4px; }
+    body.loading { opacity: 0; }
+    body { transition: opacity 0s; }
+    .result-img { width: 80px; height: 80px; object-fit: cover; border-radius: 8px; }
+  </style>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      document.body.classList.remove('loading');
+    });
+  </script>
+</head>
+<body class="bg-white text-gray-800 antialiased selection:bg-primary selection:text-white flex flex-col min-h-screen loading">
+  <header class="sticky top-0 z-50 bg-white/95 backdrop-blur-md border-b border-gray-100">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+      <div class="flex items-center gap-2">
+        <img src="https://n8jmply6oexq.meoo.fun/sb-api/storage/v1/object/public/ayi_oss/public/1778544276186-touxiang_ayi_cat_touming.png" alt="" class="h-8 w-8 rounded-full" />
+        <div>
+          <a href="https://www.ayi001.xyz" target="_blank" rel="noopener noreferrer" class="text-sm md:text-xl font-bold tracking-tight text-primary hover:text-primary-hover transition-colors">阿一AI站</a>
+          <p class="text-xs text-gray-500">Faster, Better, Easier with AI.</p>
+        </div>
+      </div>
+      <div></div>
+    </div>
+  </header>
+
+  <main class="flex-grow">
+    <section class="relative pt-16 pb-12 lg:pt-20 lg:pb-16 text-center px-4 overflow-hidden">
+      <div class="absolute top-0 left-1/2 -translate-x-1/2 w-full h-full bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-emerald-50 via-white to-white -z-10"></div>
+      <h1 class="bg-clip-text bg-gradient-to-br from-slate-900 to-slate-700 mb-6 md:text-6xl text-3xl text-transparent tracking-tighter font-extrabold">
+        阿一Banana批量去水印工具
+      </h1>
+      <p class="text-base md:text-lg text-gray-500 max-w-2xl mx-auto mb-8">
+        支持批量上传图片，并行处理，快速去除 Nano Banana 图片水印。
+      </p>
+
+      <div class="max-w-4xl mx-auto bg-white rounded-2xl shadow-soft p-2 md:p-3 border border-emerald-100">
+        <div id="uploadArea" class="group relative flex flex-col items-center justify-center w-full h-64 border-2 border-dashed border-emerald-200 rounded-xl bg-emerald-50/30 hover:bg-emerald-50 hover:border-emerald-400 transition-all cursor-pointer">
+          <div class="flex flex-col items-center justify-center pt-5 pb-6">
+            <div class="w-16 h-16 bg-white rounded-full flex items-center justify-center shadow-sm mb-4 group-hover:scale-110 transition-transform duration-300">
+              <svg class="w-8 h-8 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M 22.498 20.365 L 22.498 4.247 C 22.498 2.983 21.461 1.946 20.197 1.946 L 4.079 1.946 C 2.815 1.946 1.778 2.983 1.778 4.247 L 1.778 20.365 C 1.778 21.629 2.815 22.666 4.079 22.666 L 20.197 22.666 C 21.461 22.666 22.498 21.629 22.498 20.365 Z M 8.111 14.032 L 10.987 17.483 L 15.014 12.306 L 20.197 19.214 L 4.079 19.214 L 8.111 14.032 Z" fill="currentColor"></path></svg>
+            </div>
+            <p class="mb-2 text-lg font-medium text-gray-700">点击选择、拖拽或粘贴图片</p>
+            <p class="text-sm text-gray-400">支持 JPG、PNG、WebP，可选择多张图片，最多 50 张</p>
+          </div>
+          <input type="file" id="fileInput" accept="image/jpeg,image/png,image/webp" multiple class="hidden" />
+        </div>
+      </div>
+    </section>
+
+    <section id="resultsSection" class="max-w-7xl mx-auto px-4 pb-24" style="display: none;">
+      <div class="bg-white rounded-2xl shadow-card overflow-hidden border border-gray-100">
+        <div class="bg-gray-50 px-6 py-4 border-b border-gray-100 flex justify-between items-center">
+          <h3 class="font-semibold text-gray-700 flex items-center gap-2">
+            <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
+            <span>处理结果</span>
+          </h3>
+          <div class="flex items-center gap-2 flex-1 justify-center">
+            <span id="resultSummary" class="text-sm text-gray-500"></span>
+            <button id="clearAllBtn" class="text-sm px-2 py-0.5 bg-white border border-gray-200 text-gray-500 hover:text-gray-700 hover:bg-gray-50 rounded transition-colors">清空结果</button>
+          </div>
+          <button id="downloadAllBtn" class="text-sm px-3 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg font-medium transition-colors hidden">
+            <span class="flex items-center gap-1.5"><svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>全部下载</span>
+          </button>
+        </div>
+        <div class="overflow-x-auto">
+          <table class="w-full text-sm">
+            <thead>
+              <tr class="bg-gray-50 text-gray-500 text-xs uppercase tracking-wider">
+                <th class="px-4 py-3 text-left w-24">缩略图</th>
+                <th class="px-4 py-3 text-left">文件名</th>
+                <th class="px-4 py-3 text-left">尺寸</th>
+                <th class="px-4 py-3 text-left">状态</th>
+                <th class="px-4 py-3 text-right w-40">操作</th>
+              </tr>
+            </thead>
+            <tbody id="resultsBody" class="divide-y divide-gray-100"></tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="bg-emerald-600 text-white py-8 mt-auto">
+    <div class="max-w-7xl mx-auto px-4 text-center">
+      <p class="text-emerald-100 text-sm mb-4">
+        本工具有阿一用AI编程完成，用时2小时。
+      </p>
+      <div class="text-sm font-medium">
+        <a href="https://www.ayi001.xyz" target="_blank" rel="noopener noreferrer" class="hover:text-white transition-colors">阿一AI站</a>
+      </div>
+    </div>
+  </footer>
+
+  <div id="loadingOverlay" class="fixed inset-0 bg-white/80 backdrop-blur-sm z-[60] hidden flex items-center justify-center">
+    <div class="flex flex-col items-center">
+      <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mb-4"></div>
+      <p class="text-gray-600 font-medium" id="loadingText">正在处理...</p>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
