@@ -22,3 +22,25 @@ export interface BatchStats {
   skipped: number;
   failed: number;
 }
+
+export interface CompressedImage {
+  id: number;
+  file: File;
+  name: string;
+  originalSize: number;
+  compressedSize: number;
+  originalUrl: string;
+  compressedUrl: string;
+  compressedBlob: Blob | null;
+  ratio: number;
+  status: 'pending' | 'processing' | 'success' | 'failed';
+  error?: string;
+  _deleted?: boolean;
+}
+
+export interface CompressStats {
+  total: number;
+  done: number;
+  success: number;
+  failed: number;
+}
